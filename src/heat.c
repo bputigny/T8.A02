@@ -2,8 +2,9 @@
 
 void time_step(double alpha, double dx, double dt,
         double *u1, const double *u0, int n) {
-    for (int i=1; i<n-1; i++) {
-        for (int j=1; j<n-1; j++) {
+    int i, j;
+    for (i=1; i<n-1; i++) {
+        for (j=1; j<n-1; j++) {
             u1[i*n + j] = u0[i*n + j] +
                 alpha*(u0[(i-1)*n + j] +
                         u0[(i+1)*n + j] -
