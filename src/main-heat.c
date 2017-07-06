@@ -18,7 +18,7 @@ int main(int argc, char *argv[]) {
         }
     }
     dx = 1.0 / (nx-1);
-    dt = dx*dx / (2*alpha);
+    dt = dx*dx / (4*alpha);
 
     printf("Heat equation:\n");
     printf("  nx=%d (dx=%e)\n  nt=%d (dt=%e)\n",
