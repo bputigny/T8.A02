@@ -11,16 +11,16 @@
 #define REPS 2000
 
 typedef struct {
-    float x;
-    float y;
-    float z;
+    float *x;
+    float *y;
+    float *z;
 } point_t;
 
-point_t *alloc_points(int n);
+point_t alloc_points(int n);
 
-void free_points(point_t *pts);
+void free_points(point_t pts);
 
 // Assign n points to k clusters
-void kmeans(point_t *pts, size_t n, size_t *cluster, size_t k);
+void kmeans(point_t pts, int n, int *cluster, int k);
 
 #endif // KMEANS_H

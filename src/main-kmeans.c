@@ -1,10 +1,10 @@
 #include "kmeans.h"
 
 int main(int argc, char *argv[]) {
-    point_t *pts;
-    size_t i, r, n = 10000;
-    size_t k = 3;
-    size_t *cluster;
+    point_t pts;
+    int i, r, n = 10000;
+    int k = 3;
+    int *cluster;
 
     char c;
     while ((c = getopt(argc, argv, "n:k:")) != EOF) {
@@ -29,9 +29,9 @@ int main(int argc, char *argv[]) {
     }
 
     for (i=0; i<n; i++) {
-        pts[i].x = i;
-        pts[i].y = i;
-        pts[i].z = i;
+        pts.x[i] = i;
+        pts.y[i] = i;
+        pts.z[i] = i;
     }
 
     double t0 = omp_get_wtime();

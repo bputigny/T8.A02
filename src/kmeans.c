@@ -1,23 +1,28 @@
 #include "kmeans.h"
 
-point_t *alloc_points(int n) {
-    point_t *pts = malloc(n*sizeof(*pts));
-    if (!pts) {
+point_t alloc_points(int n) {
+    point_t pts;
+    pts.x = malloc(n*sizeof(*pts.x));
+    pts.y = malloc(n*sizeof(*pts.y));
+    pts.z = malloc(n*sizeof(*pts.z));
+    if (!pts.x || !pts.y || !pts.z) {
         fprintf(stderr, "malloc failed\n");
         exit(EXIT_FAILURE);
     }
     return pts;
 }
 
-void free_points(point_t *pts) {
-    free(pts);
+void free_points(point_t pts) {
+    free(pts.x);
+    free(pts.y);
+    free(pts.z);
 }
 
 // Assign n points to k clusters
-void kmeans(point_t *pts, size_t n, size_t *cluster, size_t k) {
-    size_t i, j;
-    point_t *mean = alloc_points(k);
-    size_t *count = malloc(k*sizeof(*count));
+void kmeans(point_t pts, int n, int *cluster, int k) {
+    int i, j;
+    point_t mean = alloc_points(k);
+    int *count = malloc(k*sizeof(*count));
 
     if (!count) {
         fprintf(stderr, "malloc faield\n");
@@ -26,18 +31,18 @@ void kmeans(point_t *pts, size_t n, size_t *cluster, size_t k) {
 
     for (j=0; j<k; j++) {
         count[j] = 0;
-        mean[j].x = .0;
-        mean[j].y = .0;
-        mean[j].z = .0;
+        mean.x[j] = .0;
+        mean.y[j] = .0;
+        mean.z[j] = .0;
     }
 
     for (i=0; i<n; i++) {
         cluster[i] = i%k;
         count[cluster[i]]++;
 
-        mean[cluster[i]].x = pts[i].x;
-        mean[cluster[i]].y = pts[i].y;
-        mean[cluster[i]].z = pts[i].z;
+        mean.x[cluster[i]] = pts.x[i];
+        mean.y[cluster[i]] = pts.y[i];
+        mean.z[cluster[i]] = pts.z[i];
     }
 
     int flips = 1;
@@ -49,12 +54,12 @@ void kmeans(point_t *pts, size_t n, size_t *cluster, size_t k) {
         // Look for nearest mean
         for (i=0; i<n; i++) {
             float dmin = .0;   // min distance
-            size_t c = cluster[i]; // nearest mean
+            int c = cluster[i]; // nearest mean
             for (j=0; j<k; j++) {
-                float dx = pts[i].x - mean[j].x;
-                float dy = pts[i].y - mean[j].y;
-                float dz = pts[i].z - mean[j].z;
-                float d = pow(dx, 2) + pow(dy, 2) + pow(dz, 2);
+                float dx = pts.x[i] - mean.x[j];
+                float dy = pts.y[i] - mean.y[j];
+                float dz = pts.z[i] - mean.z[j];
+                float d = dx*dx + dy*dy + dz*dz;
                 if (d < dmin || j == 0) {
                     dmin = d;
                     c = j;
@@ -71,22 +76,22 @@ void kmeans(point_t *pts, size_t n, size_t *cluster, size_t k) {
 
         // compute new cluster mean
         for (j=0; j<k; j++) {
-            mean[cluster[i]].x = .0;
-            mean[cluster[i]].y = .0;
-            mean[cluster[i]].z = .0;
+            mean.x[cluster[i]] = .0;
+            mean.y[cluster[i]] = .0;
+            mean.z[cluster[i]] = .0;
             count[cluster[i]] = 0;
         }
         for (i=0; i<n; i++) {
-            size_t c = cluster[i];
-            mean[c].x += pts[i].x;
-            mean[c].y += pts[i].y;
-            mean[c].z += pts[i].z;
+            int c = cluster[i];
+            mean.x[c] += pts.x[i];
+            mean.y[c] += pts.y[i];
+            mean.z[c] += pts.z[i];
             count[c]++;
         }
         for (j=0; j<k; j++) {
-            mean[j].x /= count[j];
-            mean[j].y /= count[j];
-            mean[j].z /= count[j];
+            mean.x[j] /= count[j];
+            mean.y[j] /= count[j];
+            mean.z[j] /= count[j];
         }
 
     }
